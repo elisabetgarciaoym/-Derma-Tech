@@ -1,0 +1,174 @@
+/*
+Elisabet Garcia Perez 
+22-EIIT-1-008
+Seccion: 0541
+*/
+--CREACION DE LA BASE DE DATOS
+CREATE DATABASE DERMATECH;
+GO
+USE DERMATECH;
+
+CREATE TABLE CLIENTE
+(
+ID_CL INT PRIMARY KEY IDENTITY(1,1),
+NOMBRE1 VARCHAR(25),
+NOMBRE2 VARCHAR(25) NULL,
+APELLIDO VARCHAR(25),
+APELLIDO2 VARCHAR(25) NULL,
+CEDULA VARCHAR(14) UNIQUE,
+TELEFONO VARCHAR(10)
+)
+CREATE TABLE CARGO
+(
+ID_CRG INT PRIMARY KEY IDENTITY(1,1),
+NOMBRE VARCHAR(40)
+)
+CREATE TABLE EMPLEADO
+(
+ID_EMP INT PRIMARY KEY IDENTITY(1,1),
+NOMBRE1 VARCHAR(25),
+NOMBRE2 VARCHAR(25) NULL,
+APELLIDO VARCHAR(25),
+APELLIDO2 VARCHAR(25) NULL,
+CEDULA VARCHAR(14) UNIQUE,
+TELEFONO VARCHAR(10),
+DIRECCION VARCHAR(80),
+ID_CRG INT FOREIGN KEY REFERENCES CARGO(ID_CRG)
+)
+CREATE TABLE CATEGORIA
+(
+ID_CAT INT PRIMARY KEY IDENTITY(1,1),
+NOMBRE VARCHAR(30)
+)
+CREATE TABLE PRODUCTO
+(
+ID_PROD INT PRIMARY KEY IDENTITY(1,1),
+NOMBRE VARCHAR(25),
+MARCA VARCHAR(30),
+ID_CAT INT FOREIGN KEY REFERENCES CATEGORIA(ID_CAT)
+)
+CREATE TABLE INVENTARIO
+(
+ID_PROD INT FOREIGN KEY REFERENCES PRODUCTO(ID_PROD),
+CANTIDAD_DISP INT, 
+ULT_INGRESO DATE
+)
+CREATE TABLE CITA
+(
+ID_CT INT PRIMARY KEY IDENTITY(1,1),
+FECHA_CITA DATETIME,
+ATENDIDA CHAR, -- T/F  True o false 
+ID_CL INT FOREIGN KEY REFERENCES CLIENTE(ID_CL), -- Foreign Key de cliente
+ID_EMP INT FOREIGN KEY REFERENCES EMPLEADO(ID_EMP)
+)
+CREATE TABLE CITA_DETALLE 
+(
+ID_DETALL INT PRIMARY KEY IDENTITY(1,1),
+ID_CT INT FOREIGN KEY REFERENCES CITA(ID_CT),
+ID_PROD INT FOREIGN KEY REFERENCES PRODUCTO(ID_PROD),
+CANTIDAD_USADA INT
+)
+
+--INSERCION DE DATOS
+-- Inserción de datos en la tabla CLIENTE
+INSERT INTO CLIENTE (NOMBRE1, NOMBRE2, APELLIDO, APELLIDO2, CEDULA, TELEFONO)
+VALUES
+('Ana', 'María', 'López', 'García', '12345678901', '555-1234'),
+('Juan', NULL, 'Pérez', 'Martínez', '98765432101', '555-5678'),
+('María', 'Isabel', 'González', 'Torres', '45678901234', '555-9876'),
+('Luis', 'Fernando', 'Ramírez', 'Hernández', '65432109876', '555-4321'),
+('Laura', NULL, 'Díaz', 'Sánchez', '78901234567', '555-8765'),
+('Carlos', NULL, 'Vargas', 'Luna', '56789012345', '555-2345'),
+('Sofía', 'Alejandra', 'Mendoza', 'Ortega', '34567890123', '555-7654'),
+('Pedro', NULL, 'Rojas', 'Lara', '89012345678', '555-3210'),
+('Isabella', 'Valentina', 'Silva', 'Campos', '67890123456', '555-6543'),
+('Andrés', NULL, 'Morales', 'Paredes', '01234567890', '555-2109');
+
+-- Inserción de datos en la tabla CARGO
+INSERT INTO CARGO (NOMBRE)
+VALUES
+('Dermatólogo'),
+('Asistente'),
+('Recepcionista'),
+('Enfermera'),
+('Gerente');
+
+-- Inserción de datos en la tabla EMPLEADO
+INSERT INTO EMPLEADO (NOMBRE1, NOMBRE2, APELLIDO, APELLIDO2, CEDULA, TELEFONO, DIRECCION, ID_CRG)
+VALUES
+('Jorge', NULL, 'Martínez', 'Pérez', '1234567890123', '555-1111', 'Av. Principal #123', 1),
+('María', 'José', 'Gómez', 'Ramírez', '9876543210123', '555-2222', 'Calle Secundaria #456', 1),
+('Pedro', NULL, 'Hernández', 'López', '4567890123012', '555-3333', 'Paseo Central #789', 1),
+('Luisa', 'Fernanda', 'Díaz', 'González', '6543210987123', '555-4444', 'Plaza Mayor #101', 2),
+('Carlos', 'Andrés', 'Luna', 'Vargas', '7890123456012', '555-5555', 'Avenida Norte #555', 3),
+('Ana', NULL, 'Ortega', 'Mendoza', '5678901234123', '555-6666', 'Calle Principal #222', 4),
+('Fernando', 'Antonio', 'Lara', 'Rojas', '3456789012123', '555-7777', 'Boulevard Sur #777', 5),
+('Valeria', NULL, 'Campos', 'Silva', '8901234567012', '555-8888', 'Carrera Este #888', 2),
+('Miguel', NULL, 'Paredes', 'Morales', '6789012345123', '555-9999', 'Calle Oeste #999', 2),
+('Paulina', 'Carmen', 'Pérez', 'García', '0123456789123', '555-0000', 'Avenida Central #000', 3);
+
+-- Inserción de datos en la tabla CATEGORIA
+INSERT INTO CATEGORIA (NOMBRE)
+VALUES
+('Cremas'),
+('Medicamentos'),
+('Equipos'),
+('Tratamientos'),
+('Accesorios');
+
+-- Inserción de datos en la tabla PRODUCTO
+INSERT INTO PRODUCTO (NOMBRE, MARCA, ID_CAT)
+VALUES
+('Crema Hidratante', 'Dermatech', 1),
+('Antibiótico Tópico', 'MediPharm', 2),
+('Microscopio Dermatológico', 'TechScope', 3),
+('Peeling Químico', 'SkinCare', 4),
+('Cepillo Exfoliante', 'GlowBrush', 5),
+('Protector Solar SPF 50', 'SunGuard', 1),
+('Antihistamínico Tópico', 'Relief', 2),
+('Láser Dermatológico', 'LaserTech', 3),
+('Botox', 'BeautyInjections', 4),
+('Esponja Limpiadora', 'ClearSkin', 5);
+
+-- Inserción de datos en la tabla INVENTARIO
+INSERT INTO INVENTARIO (ID_PROD, CANTIDAD_DISP, ULT_INGRESO)
+VALUES
+(1, 50, '2023-08-01'),
+(2, 25, '2023-07-15'),
+(3, 10, '2023-08-10'),
+(4, 30, '2023-07-20'),
+(5, 40, '2023-08-05'),
+(6, 60, '2023-08-02'),
+(7, 15, '2023-07-25'),
+(8, 5, '2023-08-15'),
+(9, 20, '2023-08-10'),
+(10, 35, '2023-07-30');
+
+-- Inserción de datos en la tabla CITA
+INSERT INTO CITA (FECHA_CITA, ATENDIDA, ID_CL, ID_EMP)
+VALUES
+('2023-08-10 09:00', 'T', 1, 1),
+('2023-08-12 15:30', 'T', 2, 2),
+('2023-08-15 11:15', 'F', 3, 3),
+('2023-08-18 14:00', 'F', 4, 4),
+('2023-08-20 10:45', 'T', 5, 5),
+('2023-08-22 12:30', 'F', 6, 6),
+('2023-08-25 16:20', 'T', 7, 7),
+('2023-08-28 13:00', 'F', 8, 8),
+('2023-08-30 10:00', 'F', 9, 9),
+('2023-09-02 11:30', 'T', 10, 10);
+
+-- Inserción de datos en la tabla CITA_DETALLE
+INSERT INTO CITA_DETALLE (ID_CT, ID_PROD, CANTIDAD_USADA)
+VALUES
+(1, 1, 1),
+(1, 4, 2),
+(2, 2, 1),
+(2, 5, 1),
+(3, 3, 1),
+(4, 6, 1),
+(5, 7, 1),
+(5, 8, 1),
+(6, 9, 1),
+(7, 10, 2);
+
